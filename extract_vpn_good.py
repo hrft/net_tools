@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional, List
 
-INPUT = Path("vpngate_list.csv")
+INPUT = Path("vpngate.net.csv")
 OUTPUT = Path("vpn_good.csv")
 MAX_WORKERS = 40  # تعدیل کن در صورت نیاز
 TCP_PORTS_TO_CHECK = [443, 1194, 80, 53]
