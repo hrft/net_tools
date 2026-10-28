@@ -32,7 +32,7 @@ def check_sstp_protocol(target, port=443, timeout=3.0):
 
 def test_single(row):
     # دریافت Hostname و تشخیص پورت (اگر ذکر شده باشد)
-    full_host = row.get("HostName") or row.get("IP")
+    full_host = row.get("Hostname") or row.get("IP")
     if not full_host: return None
     
     if ":" in full_host:
@@ -89,22 +89,8 @@ def main():
         return
 
     with open(INPUT, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    # --- رفع باگ خط اول (و پنهان‌تر: خط هدر) ---
-    # فایل CSV دانلودی از VPN Gate دو خط متادیتای غیر-CSV داره که
-    # csv.DictReader به‌تنهایی نمی‌تونه درستش کنه:
-    #   خط ۱ -> *vpn_servers        (و معمولاً یک خط "*" مشابه هم در انتهای فایل)
-    #   خط ۲ -> #HostName,IP,...    (این هدر واقعیه، ولی با یک # اضافه جلوش)
-    # به‌جای حذف دستیِ خط اول، اینجا هر خطی که با * شروع بشه به‌صورت خودکار
-    # فیلتر میشه و # ابتدای خط هدر هم برداشته میشه، بنابراین دیگر نیازی به
-    # ویرایش دستی فایل ورودی قبل از اجرا نیست.
-    lines = [ln for ln in lines if not ln.startswith("*")]
-    if lines and lines[0].startswith("#"):
-        lines[0] = lines[0][1:]
-
-    reader = csv.DictReader(lines)
-    unique_servers = {r["IP"]: r for r in reader if r.get("IP")}.values()
+        reader = csv.DictReader(f)
+        unique_servers = {r["IP"]: r for r in reader}.values()
 
     print(f"در حال بررسی {len(unique_servers)} سرور...")
     results = []
